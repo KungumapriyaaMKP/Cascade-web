@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Code, Globe, Share2, Mail, ArrowRight, Github, Twitter, Linkedin, ExternalLink } from 'lucide-react';
+import { Code, Globe, Share2, Mail, ArrowRight, ExternalLink } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
@@ -107,9 +107,9 @@ export default function Footer() {
           </div>
 
           <div className="flex items-center gap-4">
-            <SocialIcon icon={<Github />} />
-            <SocialIcon icon={<Twitter />} />
-            <SocialIcon icon={<Linkedin />} />
+            <SocialIcon icon={<Code />} />
+            <SocialIcon icon={<Globe />} />
+            <SocialIcon icon={<Share2 />} />
             <SocialIcon icon={<Mail />} />
           </div>
 
