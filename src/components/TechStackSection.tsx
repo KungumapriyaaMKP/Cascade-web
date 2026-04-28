@@ -1,44 +1,49 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Brain, Database, Network, Smartphone } from 'lucide-react';
+import { Brain, Database, Network, Smartphone, Cloud, Terminal, Cpu, Globe } from 'lucide-react';
 
 interface TechItem {
   name: string;
   role: string;
   icon: any;
   color: string;
+  glow: string;
   details: string[];
 }
 
 const techStack: TechItem[] = [
   {
     name: 'Vertex AI',
-    role: 'Parsing & Analysis',
+    role: 'Neural Engine',
     icon: Brain,
-    color: 'from-purple-600 to-purple-500',
-    details: ['ML Model Training', 'Real-time Inference', 'Cascade Prediction'],
+    color: 'from-purple-600 to-indigo-500',
+    glow: 'shadow-purple-500/20',
+    details: ['Predictive Cascade Modeling', 'Hyper-parameter Tuning', 'Vertex AI Pipelines'],
   },
   {
     name: 'Pub/Sub',
-    role: 'Event Ingestion',
+    role: 'Ingestion Layer',
     icon: Network,
-    color: 'from-blue-600 to-blue-500',
-    details: ['Real-time Streaming', 'Scalable Pipeline', '< 100ms Latency'],
+    color: 'from-blue-600 to-cyan-500',
+    glow: 'shadow-blue-500/20',
+    details: ['Event-driven Architecture', 'Multi-region Redundancy', 'Sub-millisecond Latency'],
   },
   {
     name: 'BigQuery',
-    role: 'Data Storage',
+    role: 'Analytical Core',
     icon: Database,
-    color: 'from-amber-600 to-amber-500',
-    details: ['OLAP Analytics', 'SQL Queries', '10B+ Row Warehouse'],
+    color: 'from-amber-500 to-orange-500',
+    glow: 'shadow-amber-500/20',
+    details: ['Petabyte-scale Analytics', 'ML on BigQuery (BQML)', 'Geospatial Intelligence'],
   },
   {
     name: 'Firebase',
-    role: 'Notifications',
+    role: 'Real-time Edge',
     icon: Smartphone,
-    color: 'from-orange-600 to-orange-500',
-    details: ['Push Notifications', 'Real-time Sync', 'Mobile Delivery'],
+    color: 'from-emerald-500 to-teal-500',
+    glow: 'shadow-emerald-500/20',
+    details: ['Cloud Messaging (FCM)', 'Firestore Real-time Sync', 'Edge Function Delivery'],
   },
 ];
 
@@ -47,22 +52,26 @@ export default function TechStackSection() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-900/50 to-slate-950">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-32 px-6 lg:px-8 relative bg-[#02040a]">
+      {/* Background patterns */}
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-full h-full bg-[url('/dots.svg')] bg-center opacity-[0.05] pointer-events-none"></div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-left mb-24"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">⚙️ Tech Stack</h2>
-          <p className="text-xl text-gray-400">
-            Enterprise-grade infrastructure powering real-time insights
+          <motion.span className="text-blue-500 font-mono text-sm tracking-[0.3em] uppercase mb-4 block font-bold">Infrastructure</motion.span>
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight text-white">The <span className="text-gradient italic font-light">Google</span> Cloud Core</h2>
+          <p className="text-xl text-slate-400 max-w-2xl leading-relaxed">
+            CascadeIQ is built on the same infrastructure that powers Google's global operations.
           </p>
         </motion.div>
 
@@ -71,8 +80,8 @@ export default function TechStackSection() {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-12"
+          viewport={{ once: true, margin: '-100px' }}
+          className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-24"
         >
           {techStack.map((tech, idx) => {
             const Icon = tech.icon;
@@ -80,31 +89,23 @@ export default function TechStackSection() {
               <motion.div
                 key={idx}
                 variants={{
-                  hidden: { opacity: 0, y: 20 },
-                  visible: { opacity: 1, y: 0, transition: { duration: 0.6 } },
+                  hidden: { opacity: 0, y: 30 },
+                  visible: { opacity: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } },
                 }}
                 className="group"
               >
-                <div className="bg-gradient-to-br from-slate-800/50 to-slate-700/50 border border-slate-700 rounded-xl p-6 h-full hover:border-slate-600 transition-all hover:shadow-xl hover:shadow-slate-700/20">
-                  {/* Icon */}
-                  <div className={`w-14 h-14 rounded-lg bg-gradient-to-br ${tech.color} p-3 mb-4 group-hover:scale-110 transition-transform`}>
+                <div className="glass-panel p-10 rounded-[2.5rem] h-full relative overflow-hidden group-hover:border-white/20 transition-all duration-500">
+                  <div className={`w-16 h-16 rounded-2xl bg-gradient-to-br ${tech.color} p-4 mb-8 shadow-2xl ${tech.glow} transform group-hover:scale-110 transition-transform duration-500`}>
                     <Icon className="w-full h-full text-white" />
                   </div>
 
-                  {/* Name */}
-                  <h3 className="text-xl font-bold mb-1">{tech.name}</h3>
+                  <h3 className="text-2xl font-bold mb-2 text-white">{tech.name}</h3>
+                  <p className="text-sm font-bold uppercase tracking-[0.2em] text-slate-500 mb-8">{tech.role}</p>
 
-                  {/* Role */}
-                  <p className="text-sm text-gray-400 mb-4 font-medium">{tech.role}</p>
-
-                  {/* Separator */}
-                  <div className="w-full h-px bg-gradient-to-r from-slate-700 to-transparent mb-4"></div>
-
-                  {/* Details */}
-                  <ul className="space-y-2">
+                  <ul className="space-y-4">
                     {tech.details.map((detail, detailIdx) => (
-                      <li key={detailIdx} className="text-sm text-gray-400 flex items-center gap-2">
-                        <span className="w-1.5 h-1.5 rounded-full bg-blue-400"></span>
+                      <li key={detailIdx} className="text-slate-400 text-sm flex items-start gap-3">
+                        <div className="w-1.5 h-1.5 rounded-full bg-blue-500/50 mt-1.5 shrink-0"></div>
                         {detail}
                       </li>
                     ))}
@@ -115,37 +116,61 @@ export default function TechStackSection() {
           })}
         </motion.div>
 
-        {/* Integration Diagram */}
+        {/* System Architecture Visualization */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 40 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-r from-slate-800/30 to-slate-700/30 border border-slate-700 rounded-xl p-8"
+          className="glass-panel p-12 rounded-[3rem] border-blue-500/10 bg-blue-500/5 relative overflow-hidden"
         >
-          <h3 className="text-xl font-bold mb-6">Integration Flow</h3>
-          <div className="flex flex-col sm:flex-row items-center justify-center gap-4 text-center text-gray-400">
-            <div className="flex items-center gap-2">
-              <div className="px-4 py-2 rounded bg-slate-700/50">IoT Sensors</div>
-            </div>
-            <div className="text-2xl">→</div>
-            <div className="flex items-center gap-2">
-              <div className="px-4 py-2 rounded bg-blue-500/20 text-blue-300 font-semibold">Pub/Sub</div>
-            </div>
-            <div className="text-2xl">→</div>
-            <div className="flex items-center gap-2">
-              <div className="px-4 py-2 rounded bg-purple-500/20 text-purple-300 font-semibold">Vertex AI</div>
-            </div>
-            <div className="text-2xl">→</div>
-            <div className="flex items-center gap-2">
-              <div className="px-4 py-2 rounded bg-amber-500/20 text-amber-300 font-semibold">BigQuery</div>
-            </div>
-            <div className="text-2xl">→</div>
-            <div className="flex items-center gap-2">
-              <div className="px-4 py-2 rounded bg-slate-700/50">Dashboard</div>
-            </div>
+          <div className="absolute top-0 right-0 p-12 opacity-5">
+             <Cloud className="w-48 h-48" />
+          </div>
+
+          <h3 className="text-2xl font-bold mb-12 text-white flex items-center gap-3">
+             <Terminal className="w-6 h-6 text-blue-500" />
+             End-to-End Orchestration
+          </h3>
+
+          <div className="flex flex-col lg:flex-row items-center justify-between gap-12 relative">
+             <ArchNode icon={<Globe />} label="Edge Sensors" status="Input" />
+             <ArchLine />
+             <ArchNode icon={<Network />} label="Pub/Sub" status="Stream" />
+             <ArchLine />
+             <ArchNode icon={<Brain />} label="Vertex AI" status="Brain" />
+             <ArchLine />
+             <ArchNode icon={<Database />} label="BigQuery" status="Lake" />
+             <ArchLine />
+             <ArchNode icon={<Cpu />} label="API / Dashboard" status="Output" />
           </div>
         </motion.div>
       </div>
     </section>
+  );
+}
+
+function ArchNode({ icon, label, status }: { icon: any; label: string; status: string }) {
+  return (
+    <div className="flex flex-col items-center gap-4 group">
+       <div className="w-16 h-16 rounded-2xl glass-card border-white/10 flex items-center justify-center text-blue-400 group-hover:scale-110 group-hover:text-white transition-all duration-500">
+          {icon}
+       </div>
+       <div className="text-center">
+          <p className="text-white font-bold mb-1">{label}</p>
+          <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-slate-600 group-hover:text-blue-500 transition-colors">{status}</p>
+       </div>
+    </div>
+  );
+}
+
+function ArchLine() {
+  return (
+    <div className="hidden lg:block flex-1 h-[2px] bg-gradient-to-r from-blue-500/0 via-blue-500/20 to-blue-500/0 relative">
+       <motion.div
+         animate={{ x: ['0%', '100%'] }}
+         transition={{ duration: 2, repeat: Infinity, ease: 'linear' }}
+         className="absolute top-[-2px] left-0 w-8 h-1.5 bg-blue-500/50 rounded-full blur-sm"
+       />
+    </div>
   );
 }

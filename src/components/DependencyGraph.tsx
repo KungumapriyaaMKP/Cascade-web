@@ -1,7 +1,7 @@
 'use client';
 
-import { motion } from 'framer-motion';
-import { AlertTriangle, Truck, Warehouse, Clock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
+import { AlertTriangle, Truck, Warehouse, Clock, Share2, Activity } from 'lucide-react';
 import { useState } from 'react';
 
 interface Node {
@@ -9,7 +9,7 @@ interface Node {
   label: string;
   icon: any;
   color: string;
-  bgColor: string;
+  glow: string;
   status: 'healthy' | 'affected' | 'critical';
   details: string;
 }
@@ -19,8 +19,8 @@ const nodes: Node[] = [
     id: 'port',
     label: 'Port Hamburg',
     icon: AlertTriangle,
-    color: 'text-red-400',
-    bgColor: 'bg-red-950/50 border-red-800/50',
+    color: 'text-red-500',
+    glow: 'shadow-red-500/20',
     status: 'critical',
     details: '12h delay, Ship MV-2024 delayed',
   },
@@ -28,8 +28,8 @@ const nodes: Node[] = [
     id: 'truck1',
     label: 'Truck TN-001',
     icon: Truck,
-    color: 'text-orange-400',
-    bgColor: 'bg-orange-950/50 border-orange-800/50',
+    color: 'text-orange-500',
+    glow: 'shadow-orange-500/20',
     status: 'affected',
     details: 'Waiting for cargo, idle 4h',
   },
@@ -37,8 +37,8 @@ const nodes: Node[] = [
     id: 'truck2',
     label: 'Truck TN-002',
     icon: Truck,
-    color: 'text-orange-400',
-    bgColor: 'bg-orange-950/50 border-orange-800/50',
+    color: 'text-orange-500',
+    glow: 'shadow-orange-500/20',
     status: 'affected',
     details: 'Waiting for cargo, idle 4h',
   },
@@ -46,8 +46,8 @@ const nodes: Node[] = [
     id: 'warehouse',
     label: 'Warehouse Central',
     icon: Warehouse,
-    color: 'text-yellow-400',
-    bgColor: 'bg-yellow-950/50 border-yellow-800/50',
+    color: 'text-amber-500',
+    glow: 'shadow-amber-500/20',
     status: 'affected',
     details: 'Fulfillment delayed, 3 orders pending',
   },
@@ -55,8 +55,8 @@ const nodes: Node[] = [
     id: 'truck3',
     label: 'Truck TN-003',
     icon: Truck,
-    color: 'text-green-400',
-    bgColor: 'bg-green-950/50 border-green-800/50',
+    color: 'text-emerald-500',
+    glow: 'shadow-emerald-500/20',
     status: 'healthy',
     details: 'On schedule, no impact',
   },
@@ -69,22 +69,29 @@ export default function DependencyGraph() {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.1 },
+      transition: { staggerChildren: 0.15 },
     },
   };
 
   return (
-    <section className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-900/50 to-slate-950">
-      <div className="max-w-6xl mx-auto">
+    <section className="py-32 px-6 lg:px-8 relative bg-[#02040a]">
+      {/* Decorative lines */}
+      <div className="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none">
+         <div className="absolute top-[20%] left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-blue-500 to-transparent"></div>
+         <div className="absolute top-[60%] left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-purple-500 to-transparent"></div>
+      </div>
+
+      <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-24"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">🔗 Dependency Graph</h2>
-          <p className="text-xl text-gray-400">
-            See how a single disruption cascades across your supply chain
+          <motion.span className="text-blue-500 font-mono text-sm tracking-[0.3em] uppercase mb-4 block font-bold">Network Visualization</motion.span>
+          <h2 className="text-5xl md:text-6xl font-bold mb-6 tracking-tight text-white">The <span className="text-gradient italic font-light">Propagation</span> Map</h2>
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Visualize the ripple effects of disruptions in real-time. Understand every point of failure.
           </p>
         </motion.div>
 
@@ -93,76 +100,72 @@ export default function DependencyGraph() {
           variants={containerVariants}
           initial="hidden"
           whileInView="visible"
-          viewport={{ once: true, margin: '-50px' }}
-          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-12"
+          viewport={{ once: true, margin: '-100px' }}
+          className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-8 mb-24"
         >
-          {nodes.map((node) => {
+          {nodes.map((node, idx) => {
             const Icon = node.icon;
             return (
               <motion.div
                 key={node.id}
-                variants={{ hidden: { opacity: 0, scale: 0.8 }, visible: { opacity: 1, scale: 1 } }}
+                variants={{ hidden: { opacity: 0, scale: 0.9, y: 30 }, visible: { opacity: 1, scale: 1, y: 0, transition: { duration: 0.8, ease: [0.22, 1, 0.36, 1] } } }}
                 onMouseEnter={() => setHoveredNode(node.id)}
                 onMouseLeave={() => setHoveredNode(null)}
                 className="relative"
               >
+                {/* Connection Indicators (Desktop only) */}
+                {idx < nodes.length - 1 && (
+                  <div className="hidden lg:block absolute top-1/2 -right-8 w-8 h-[2px] bg-slate-800 z-0">
+                     <motion.div 
+                       animate={{ x: [0, 32] }}
+                       transition={{ duration: 1.5, repeat: Infinity, ease: 'linear' }}
+                       className={`w-2 h-2 rounded-full absolute -top-[3px] blur-[1px] ${
+                         node.status === 'critical' ? 'bg-red-500' : 'bg-blue-500/30'
+                       }`}
+                     />
+                  </div>
+                )}
+
                 {/* Node Card */}
                 <motion.div
-                  whileHover={{ scale: 1.05, y: -5 }}
-                  className={`rounded-lg border p-6 text-center cursor-pointer transition-all ${node.bgColor} group`}
+                  whileHover={{ y: -10, scale: 1.02 }}
+                  className={`glass-panel p-8 rounded-[2.5rem] text-center cursor-pointer relative overflow-hidden transition-all duration-500 border-white/5 ${
+                    hoveredNode === node.id ? 'border-blue-500/30 bg-blue-500/5' : ''
+                  }`}
                 >
-                  {/* Icon */}
-                  <div className="mb-4 flex justify-center">
-                    <div
-                      className={`w-12 h-12 rounded-lg flex items-center justify-center ${
-                        node.status === 'critical'
-                          ? 'bg-red-500/20'
-                          : node.status === 'affected'
-                            ? 'bg-orange-500/20'
-                            : 'bg-green-500/20'
-                      }`}
-                    >
-                      <Icon className={`w-6 h-6 ${node.color}`} />
-                    </div>
+                  <div className={`w-14 h-14 rounded-2xl mx-auto mb-6 flex items-center justify-center transition-all duration-500 ${
+                    node.status === 'critical'
+                      ? 'bg-red-500/20 shadow-lg shadow-red-500/20'
+                      : node.status === 'affected'
+                        ? 'bg-amber-500/20 shadow-lg shadow-amber-500/20'
+                        : 'bg-emerald-500/20 shadow-lg shadow-emerald-500/20'
+                  }`}>
+                    <Icon className={`w-7 h-7 ${node.color}`} />
                   </div>
 
-                  {/* Label */}
-                  <h3 className="font-semibold text-white mb-2">{node.label}</h3>
-
-                  {/* Status Badge */}
-                  <div className="mb-3">
-                    <span
-                      className={`text-xs px-2 py-1 rounded font-bold ${
-                        node.status === 'critical'
-                          ? 'bg-red-500/20 text-red-300'
-                          : node.status === 'affected'
-                            ? 'bg-orange-500/20 text-orange-300'
-                            : 'bg-green-500/20 text-green-300'
-                      }`}
-                    >
-                      {node.status.toUpperCase()}
-                    </span>
+                  <h3 className="font-bold text-white text-lg mb-2">{node.label}</h3>
+                  <div className="flex items-center justify-center gap-2">
+                     <div className={`w-2 h-2 rounded-full animate-pulse ${
+                        node.status === 'critical' ? 'bg-red-500' : node.status === 'affected' ? 'bg-amber-500' : 'bg-emerald-500'
+                     }`} />
+                     <span className="text-[10px] font-black uppercase tracking-widest text-slate-500">{node.status}</span>
                   </div>
-
-                  {/* Connection Lines */}
-                  {node.id === 'port' && (
-                    <>
-                      <div className="absolute top-full left-1/2 -translate-x-1/2 h-8 w-0.5 bg-gradient-to-b from-red-500 to-orange-500"></div>
-                    </>
-                  )}
                 </motion.div>
 
                 {/* Hover Details */}
                 <AnimatePresence>
                   {hoveredNode === node.id && (
                     <motion.div
-                      initial={{ opacity: 0, y: 10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: 10 }}
-                      className="absolute top-full mt-2 left-1/2 -translate-x-1/2 w-48 bg-slate-800 border border-slate-700 rounded-lg p-3 z-10 shadow-xl"
+                      initial={{ opacity: 0, y: 20, scale: 0.9 }}
+                      animate={{ opacity: 1, y: 0, scale: 1 }}
+                      exit={{ opacity: 0, y: 10, scale: 0.9 }}
+                      className="absolute top-full mt-4 left-1/2 -translate-x-1/2 w-64 glass-card border-white/10 p-5 z-20 shadow-2xl"
                     >
-                      <p className="text-xs text-gray-400 font-bold mb-1">DETAILS</p>
-                      <p className="text-sm text-gray-300">{node.details}</p>
+                      <div className="flex items-center gap-2 mb-3">
+                         <Activity className="w-3 h-3 text-blue-500" />
+                         <p className="text-[10px] text-slate-500 font-bold uppercase tracking-widest">System Diagnostics</p>
+                      </div>
+                      <p className="text-sm text-slate-300 leading-relaxed font-medium">{node.details}</p>
                     </motion.div>
                   )}
                 </AnimatePresence>
@@ -173,25 +176,21 @@ export default function DependencyGraph() {
 
         {/* Legend */}
         <motion.div
-          initial={{ opacity: 0, y: 20 }}
+          initial={{ opacity: 0, y: 30 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="bg-gradient-to-r from-slate-800/30 to-slate-700/30 border border-slate-700 rounded-lg p-8"
+          className="glass-panel p-10 rounded-[3rem] border-white/5 bg-white/[0.02]"
         >
-          <h3 className="text-lg font-semibold mb-6">Legend</h3>
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 rounded-full bg-red-500"></div>
-              <span className="text-gray-300">Critical - Direct disruption source</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 rounded-full bg-orange-500"></div>
-              <span className="text-gray-300">Affected - Experiencing cascade impact</span>
-            </div>
-            <div className="flex items-center gap-3">
-              <div className="w-4 h-4 rounded-full bg-green-500"></div>
-              <span className="text-gray-300">Healthy - No current impact</span>
-            </div>
+          <div className="flex flex-col md:flex-row items-center justify-between gap-8">
+             <div className="flex items-center gap-4">
+                <Share2 className="w-6 h-6 text-blue-500" />
+                <h3 className="text-xl font-bold text-white">System Severity Index</h3>
+             </div>
+             <div className="flex flex-wrap justify-center gap-12">
+               <LegendItem color="bg-red-500" label="Critical Disruption" />
+               <LegendItem color="bg-amber-500" label="Impacted Node" />
+               <LegendItem color="bg-emerald-500" label="Nominal Status" />
+             </div>
           </div>
         </motion.div>
       </div>
@@ -199,4 +198,11 @@ export default function DependencyGraph() {
   );
 }
 
-import { AnimatePresence } from 'framer-motion';
+function LegendItem({ color, label }: { color: string; label: string }) {
+   return (
+      <div className="flex items-center gap-3">
+         <div className={`w-3 h-3 rounded-full ${color} shadow-[0_0_10px_rgba(255,255,255,0.2)]`}></div>
+         <span className="text-sm font-bold text-slate-400">{label}</span>
+      </div>
+   );
+}

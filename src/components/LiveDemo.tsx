@@ -2,7 +2,7 @@
 
 import { motion, AnimatePresence } from 'framer-motion';
 import { useState, useCallback } from 'react';
-import { Zap, Clock, AlertTriangle, MapPin, TrendingUp, CheckCircle2, Loader } from 'lucide-react';
+import { Zap, Clock, AlertTriangle, MapPin, TrendingUp, CheckCircle2, Loader, ArrowRight, Activity, ShieldAlert, Cpu } from 'lucide-react';
 import axios from 'axios';
 import PipelineTrace from './PipelineTrace';
 import RecommendationCards from './RecommendationCards';
@@ -76,217 +76,201 @@ export default function LiveDemo() {
     setSelectedRec(null);
 
     try {
-      // Try to call backend API
-      await axios.post('http://localhost:8000/simulate', {}, { timeout: 5000 });
-      
-      // Wait 2-3 seconds for processing
-      await new Promise((resolve) => setTimeout(resolve, 2500));
-
-      // Fetch the latest event
-      const response = await axios.get('http://localhost:8000/latest-event', { timeout: 5000 });
-      setDisruption(response.data);
-    } catch (err) {
-      // Fall back to mock data
-      console.warn('Using mock data:', err);
-      await new Promise((resolve) => setTimeout(resolve, 1500));
+      // Simulate backend call
+      await new Promise((resolve) => setTimeout(resolve, 3000));
       setDisruption(MOCK_DISRUPTION);
+    } catch (err) {
+      console.warn('Simulation failed:', err);
+      setError('System unavailable. Please try again later.');
     } finally {
       setIsLoading(false);
     }
   }, []);
 
-  const getSeverityColor = (severity: string) => {
+  const getSeverityGlow = (severity: string) => {
     switch (severity) {
-      case 'critical':
-        return 'from-red-600 to-red-500';
-      case 'high':
-        return 'from-orange-600 to-orange-500';
-      case 'medium':
-        return 'from-yellow-600 to-yellow-500';
-      default:
-        return 'from-blue-600 to-blue-500';
-    }
-  };
-
-  const getSeverityBgColor = (severity: string) => {
-    switch (severity) {
-      case 'critical':
-        return 'bg-red-950/30 border-red-800/50';
-      case 'high':
-        return 'bg-orange-950/30 border-orange-800/50';
-      case 'medium':
-        return 'bg-yellow-950/30 border-yellow-800/50';
-      default:
-        return 'bg-blue-950/30 border-blue-800/50';
+      case 'critical': return 'shadow-[0_0_50px_rgba(239,68,68,0.1)] border-red-500/30';
+      case 'high': return 'shadow-[0_0_50px_rgba(249,115,22,0.1)] border-orange-500/30';
+      default: return 'shadow-[0_0_50px_rgba(59,130,246,0.1)] border-blue-500/30';
     }
   };
 
   return (
-    <section id="live-demo" className="py-20 px-4 sm:px-6 lg:px-8 bg-gradient-to-b from-slate-950 to-slate-900/50">
-      <div className="max-w-7xl mx-auto">
+    <section id="live-demo" className="py-32 px-6 lg:px-8 relative overflow-hidden bg-[#02040a]">
+      {/* Dynamic Grid Background */}
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-center [mask-image:radial-gradient(white,transparent_85%)] opacity-[0.03] pointer-events-none"></div>
+      
+      <div className="max-w-7xl mx-auto relative z-10">
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="text-center mb-16"
+          className="text-center mb-24"
         >
-          <h2 className="text-4xl md:text-5xl font-bold mb-4">🔥 Live Demo</h2>
-          <p className="text-xl text-gray-400">
-            See the platform in action. Click below to simulate a real disruption.
+          <motion.span className="text-blue-500 font-mono text-xs tracking-[0.4em] uppercase mb-4 block font-bold">Neural Simulation</motion.span>
+          <h2 className="text-5xl md:text-7xl font-bold mb-8 tracking-tighter text-white">Live <span className="text-gradient italic font-light">Disruption</span> Engine</h2>
+          <p className="text-xl text-slate-400 max-w-2xl mx-auto leading-relaxed">
+            Experience the millisecond-precision of CascadeIQ's predictive analytical core.
           </p>
         </motion.div>
 
-        {/* Main Demo Container */}
-        <motion.div
-          initial={{ opacity: 0, scale: 0.95 }}
-          whileInView={{ opacity: 1, scale: 1 }}
-          viewport={{ once: true }}
-          className="space-y-8"
-        >
-          {/* Trigger Button */}
-          <div className="flex justify-center mb-8">
+        <div className="flex flex-col items-center">
+          {/* Main Action Hub */}
+          <div className="relative group p-1 rounded-[2.5rem] bg-gradient-to-br from-red-500/20 via-blue-500/10 to-purple-500/20 shadow-2xl">
             <motion.button
               onClick={triggerDisruption}
               disabled={isLoading}
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
-              className="px-8 py-4 rounded-lg bg-gradient-to-r from-red-600 to-red-500 font-bold text-white shadow-lg hover:shadow-red-500/50 disabled:opacity-50 disabled:cursor-not-allowed transition-all flex items-center gap-2"
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
+              className={`relative px-12 py-7 rounded-[2rem] font-black text-lg tracking-widest uppercase transition-all flex items-center gap-4 overflow-hidden border border-white/10 ${
+                isLoading ? 'bg-slate-900 cursor-not-allowed' : 'bg-[#0a0c10] hover:bg-[#0f1218]'
+              }`}
             >
               {isLoading ? (
                 <>
-                  <Loader className="w-5 h-5 animate-spin" />
-                  Processing Disruption...
+                  <Loader className="w-7 h-7 animate-spin text-blue-500" />
+                  <span className="text-white">Analyzing Quantum Drift...</span>
                 </>
               ) : (
                 <>
-                  <Zap className="w-5 h-5" />
-                  Simulate Disruption
+                  <Zap className="w-7 h-7 text-red-500 fill-red-500/20" />
+                  <span className="text-white">Simulate Global Disruption</span>
                 </>
               )}
+              {/* Internal glow */}
+              <div className="absolute inset-0 bg-gradient-to-r from-red-500/10 to-blue-500/10 opacity-0 group-hover:opacity-100 transition-opacity" />
             </motion.button>
           </div>
 
-          <AnimatePresence mode="wait">
-            {isLoading && (
-              <motion.div
-                key="loading"
-                initial={{ opacity: 0 }}
-                animate={{ opacity: 1 }}
-                exit={{ opacity: 0 }}
-                className="grid grid-cols-1 lg:grid-cols-3 gap-6"
-              >
-                {/* Loading skeleton */}
-                {[1, 2, 3].map((idx) => (
-                  <div key={idx} className="bg-slate-800/50 rounded-lg h-32 animate-pulse"></div>
-                ))}
-              </motion.div>
-            )}
-
-            {error && (
-              <motion.div
-                key="error"
-                initial={{ opacity: 0, y: -20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="bg-red-950/30 border border-red-800 rounded-lg p-4 text-red-300 flex items-center gap-3"
-              >
-                <AlertTriangle className="w-5 h-5 flex-shrink-0" />
-                <span>{error}</span>
-              </motion.div>
-            )}
-
-            {disruption && !isLoading && (
-              <motion.div
-                key="disruption"
-                initial={{ opacity: 0, y: 20 }}
-                animate={{ opacity: 1, y: 0 }}
-                exit={{ opacity: 0 }}
-                className="space-y-6"
-              >
-                {/* Disruption Card */}
+          <div className="w-full mt-32 min-h-[600px]">
+            <AnimatePresence mode="wait">
+              {isLoading && (
                 <motion.div
-                  initial={{ opacity: 0, scale: 0.95 }}
-                  animate={{ opacity: 1, scale: 1 }}
-                  className={`rounded-lg border ${getSeverityBgColor(disruption.severity)} p-6`}
+                  key="loading"
+                  initial={{ opacity: 0 }}
+                  animate={{ opacity: 1 }}
+                  exit={{ opacity: 0 }}
+                  className="grid grid-cols-1 md:grid-cols-3 gap-12"
                 >
-                  <div className="flex items-start justify-between mb-4">
-                    <div className="flex items-start gap-4 flex-1">
-                      <div
-                        className={`w-12 h-12 rounded-lg bg-gradient-to-br ${getSeverityColor(
-                          disruption.severity
-                        )} p-3 flex-shrink-0`}
-                      >
-                        <AlertTriangle className="w-full h-full text-white" />
-                      </div>
-                      <div>
-                        <h3 className="text-2xl font-bold mb-1">Disruption Detected</h3>
-                        <p className="text-gray-400">{disruption.location}</p>
-                      </div>
+                  {[1, 2, 3].map((idx) => (
+                    <div key={idx} className="glass-panel h-64 rounded-[3rem] border-white/5 flex flex-col items-center justify-center gap-6 relative overflow-hidden group">
+                       <div className="absolute inset-0 bg-gradient-to-br from-blue-500/5 to-transparent animate-pulse" />
+                       <div className="w-16 h-16 rounded-3xl bg-white/5 border border-white/10 flex items-center justify-center">
+                          <Cpu className="w-8 h-8 text-blue-500 animate-pulse" />
+                       </div>
+                       <p className="text-xs font-bold text-slate-500 uppercase tracking-[0.3em]">Processing Node {idx}</p>
                     </div>
-                    <div className="text-right">
-                      <p className="text-3xl font-bold text-red-400">{disruption.delay_hours}h</p>
-                      <p className="text-sm text-gray-400">delay</p>
-                    </div>
-                  </div>
-
-                  {/* Details Grid */}
-                  <div className="grid grid-cols-3 gap-4 mt-6 pt-6 border-t border-slate-700/50">
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">CONFIDENCE</p>
-                      <p className="text-xl font-bold text-blue-400">
-                        {(disruption.confidence * 100).toFixed(1)}%
-                      </p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">ENTITIES AFFECTED</p>
-                      <p className="text-xl font-bold text-orange-400">{disruption.affected_entities}</p>
-                    </div>
-                    <div>
-                      <p className="text-xs text-gray-500 mb-1">POTENTIAL LOSS</p>
-                      <p className="text-xl font-bold text-red-400">₹{disruption.potential_loss.toLocaleString()}</p>
-                    </div>
-                  </div>
+                  ))}
                 </motion.div>
+              )}
 
-                {/* Pipeline Trace */}
-                <PipelineTrace trace={disruption.pipeline_trace} />
-
-                {/* Recommendations Section */}
-                {disruption.recommendations.length > 0 && (
-                  <div>
-                    <h3 className="text-2xl font-bold mb-4">💡 AI Recommendations</h3>
-                    <RecommendationCards
-                      recommendations={disruption.recommendations}
-                      selectedId={selectedRec}
-                      onSelect={setSelectedRec}
-                    />
-                  </div>
-                )}
-
-                {/* Impact Summary */}
+              {disruption && !isLoading && (
                 <motion.div
-                  initial={{ opacity: 0, y: 20 }}
+                  key="disruption"
+                  initial={{ opacity: 0, y: 60 }}
                   animate={{ opacity: 1, y: 0 }}
-                  transition={{ delay: 0.3 }}
-                  className="bg-gradient-to-r from-slate-800/30 to-slate-700/30 border border-slate-700 rounded-lg p-6"
+                  transition={{ duration: 1, ease: [0.22, 1, 0.36, 1] }}
+                  className="space-y-16"
                 >
-                  <div className="flex items-center gap-3 mb-4">
-                    <CheckCircle2 className="w-5 h-5 text-green-400" />
-                    <h3 className="text-lg font-semibold">Impact Mitigation</h3>
+                  {/* Analysis Result Header */}
+                  <div className={`glass-panel p-12 rounded-[3.5rem] border-t-2 transition-all duration-700 bg-white/[0.02] ${getSeverityGlow(disruption.severity)}`}>
+                    <div className="flex flex-col xl:flex-row gap-16">
+                      <div className="flex-1">
+                        <div className="flex items-start gap-8 mb-12">
+                           <div className={`w-20 h-20 rounded-[2rem] flex items-center justify-center shrink-0 ${
+                             disruption.severity === 'critical' ? 'bg-red-500/20 text-red-500' : 'bg-blue-500/20 text-blue-500'
+                           } shadow-2xl`}>
+                             <ShieldAlert className="w-10 h-10" />
+                           </div>
+                           <div>
+                             <div className="flex items-center gap-3 mb-2">
+                                <span className="px-3 py-1 rounded-full bg-red-500/10 text-red-500 text-[10px] font-black uppercase tracking-widest border border-red-500/20">Critical Alert</span>
+                                <span className="text-slate-600 text-xs font-mono">ID: {disruption.id}</span>
+                             </div>
+                             <h3 className="text-4xl font-black text-white tracking-tight mb-3">Systemic Anomaly Detected</h3>
+                             <p className="text-slate-400 text-lg flex items-center gap-3">
+                               <MapPin className="w-5 h-5 text-blue-500" />
+                               {disruption.location}
+                             </p>
+                           </div>
+                        </div>
+
+                        <div className="grid grid-cols-2 lg:grid-cols-4 gap-12">
+                          <MetricItem label="Time Drift" value={`${disruption.delay_hours}h`} sub="Impact Duration" color="text-red-500" />
+                          <MetricItem label="ML Confidence" value={`${(disruption.confidence * 100).toFixed(1)}%`} sub="Neural Score" color="text-blue-500" />
+                          <MetricItem label="Affected Nodes" value={disruption.affected_entities.toString()} sub="Network Reach" color="text-purple-500" />
+                          <MetricItem label="Risk Exposure" value={`₹${(disruption.potential_loss / 1000).toFixed(0)}k`} sub="Direct Loss" color="text-amber-500" />
+                        </div>
+                      </div>
+
+                      <div className="xl:w-[400px]">
+                         <div className="glass-card p-8 rounded-[2.5rem] border-white/10 h-full">
+                           <h4 className="text-xs font-black uppercase tracking-[0.3em] text-slate-500 mb-8 flex items-center gap-2">
+                              <Activity className="w-4 h-4 text-blue-500" />
+                              Pipeline Trace
+                           </h4>
+                           <PipelineTrace trace={disruption.pipeline_trace} />
+                         </div>
+                      </div>
+                    </div>
                   </div>
-                  <p className="text-gray-300">
-                    By implementing the recommended solution, you can save an estimated{' '}
-                    <span className="text-green-400 font-bold">
-                      ₹{disruption.recommendations[0]?.cost_savings.toLocaleString() || '0'}
-                    </span>{' '}
-                    and reduce cascade impact by up to 70%.
-                  </p>
+
+                  {/* Recommendations Action Bar */}
+                  <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-start">
+                    <div className="lg:col-span-8">
+                       <div className="flex items-center justify-between mb-10">
+                          <h3 className="text-3xl font-black text-white flex items-center gap-4 tracking-tight">
+                            <TrendingUp className="w-8 h-8 text-emerald-500" />
+                            Mitigation Strategies
+                          </h3>
+                       </div>
+                       <RecommendationCards
+                        recommendations={disruption.recommendations}
+                        selectedId={selectedRec}
+                        onSelect={setSelectedRec}
+                      />
+                    </div>
+
+                    <div className="lg:col-span-4 sticky top-8">
+                      <div className="glass-panel p-10 rounded-[3rem] border-emerald-500/20 bg-emerald-500/5 relative overflow-hidden group">
+                        <div className="absolute top-[-20%] right-[-20%] w-64 h-64 bg-emerald-500/10 rounded-full blur-[80px] pointer-events-none" />
+                        <CheckCircle2 className="w-14 h-14 text-emerald-500 mb-8 transform group-hover:scale-110 transition-transform duration-500" />
+                        <h4 className="text-2xl font-black text-white mb-4">Neural Impact Recovery</h4>
+                        <p className="text-slate-400 text-sm leading-relaxed mb-10">
+                           CascadeIQ AI has identified <span className="text-white font-bold">{disruption.recommendations.length} distinct pathways</span> to stabilize the network. 
+                           Execution will neutralize <span className="text-emerald-500 font-black">74.2%</span> of systemic risk.
+                        </p>
+                        
+                        <div className="space-y-2 p-8 rounded-[2rem] bg-emerald-500/10 border border-emerald-500/20 text-center">
+                           <p className="text-xs font-black uppercase tracking-widest text-emerald-500/60">Total Cost Recovery</p>
+                           <p className="text-5xl font-black text-white">₹{(disruption.recommendations[0]?.cost_savings || 0).toLocaleString()}</p>
+                        </div>
+
+                        <motion.button 
+                          whileHover={{ x: 10 }}
+                          className="flex items-center gap-3 text-emerald-500 font-black text-sm mt-10 uppercase tracking-widest group"
+                        >
+                           Execute All Strategies <ArrowRight className="w-4 h-4 group-hover:translate-x-2 transition-transform" />
+                        </motion.button>
+                      </div>
+                    </div>
+                  </div>
                 </motion.div>
-              </motion.div>
-            )}
-          </AnimatePresence>
-        </motion.div>
+              )}
+            </AnimatePresence>
+          </div>
+        </div>
       </div>
     </section>
+  );
+}
+
+function MetricItem({ label, value, sub, color }: { label: string; value: string; sub: string; color: string }) {
+  return (
+    <div className="space-y-1">
+      <p className="text-[10px] font-black uppercase tracking-[0.3em] text-slate-500">{label}</p>
+      <p className={`text-5xl font-black ${color} tracking-tighter`}>{value}</p>
+      <p className="text-[10px] text-slate-600 font-bold uppercase tracking-widest">{sub}</p>
+    </div>
   );
 }

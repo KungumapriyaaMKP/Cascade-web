@@ -1,7 +1,7 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { CheckCircle2, Loader, Clock } from 'lucide-react';
+import { CheckCircle2, Loader, Clock, Activity } from 'lucide-react';
 
 interface PipelineStep {
   step: string;
@@ -18,69 +18,65 @@ export default function PipelineTrace({ trace }: Props) {
     hidden: { opacity: 0 },
     visible: {
       opacity: 1,
-      transition: { staggerChildren: 0.15 },
+      transition: { staggerChildren: 0.1 },
     },
   };
 
   const itemVariants = {
-    hidden: { opacity: 0, x: -20 },
-    visible: { opacity: 1, x: 0 },
+    hidden: { opacity: 0, x: -10 },
+    visible: { opacity: 1, x: 0, transition: { duration: 0.5, ease: 'easeOut' } },
   };
 
   return (
-    <motion.div
-      initial={{ opacity: 0, y: 20 }}
-      animate={{ opacity: 1, y: 0 }}
-      transition={{ delay: 0.2 }}
-      className="bg-gradient-to-r from-slate-800/30 to-slate-700/30 border border-slate-700 rounded-lg p-6"
-    >
-      <h3 className="text-lg font-semibold mb-6 flex items-center gap-2">
-        <Clock className="w-5 h-5 text-blue-400" />
-        Pipeline Execution Trace
-      </h3>
-
+    <div className="space-y-4">
       <motion.div
         variants={containerVariants}
         initial="hidden"
         animate="visible"
-        className="space-y-3"
+        className="space-y-2"
       >
         {trace.map((item, idx) => (
           <motion.div
             key={idx}
             variants={itemVariants}
-            className="flex items-center gap-4 p-3 rounded-lg bg-slate-900/50 hover:bg-slate-900/70 transition-colors"
+            className="flex items-center gap-4 p-4 rounded-2xl bg-white/[0.02] border border-white/5 hover:bg-white/[0.04] transition-all group"
           >
             {/* Icon */}
             <div className="flex-shrink-0">
               {item.status === 'completed' ? (
-                <CheckCircle2 className="w-5 h-5 text-green-400" />
+                <div className="w-8 h-8 rounded-full bg-emerald-500/10 flex items-center justify-center border border-emerald-500/20">
+                   <CheckCircle2 className="w-4 h-4 text-emerald-500" />
+                </div>
               ) : item.status === 'processing' ? (
-                <Loader className="w-5 h-5 text-blue-400 animate-spin" />
+                <div className="w-8 h-8 rounded-full bg-blue-500/10 flex items-center justify-center border border-blue-500/20">
+                   <Loader className="w-4 h-4 text-blue-500 animate-spin" />
+                </div>
               ) : (
-                <div className="w-5 h-5 rounded-full border-2 border-gray-600"></div>
+                <div className="w-8 h-8 rounded-full border border-slate-700"></div>
               )}
             </div>
 
             {/* Step Name */}
             <div className="flex-1">
-              <p className="font-medium">{item.step}</p>
+              <p className="text-sm font-bold text-slate-300 group-hover:text-white transition-colors">{item.step}</p>
             </div>
 
             {/* Timestamp */}
-            <div className="text-right">
-              <p className="text-sm font-mono text-gray-400">{item.timestamp}</p>
+            <div className="text-right shrink-0">
+              <p className="text-[10px] font-mono font-bold text-slate-600 bg-slate-900 px-2 py-1 rounded-md">{item.timestamp}</p>
             </div>
           </motion.div>
         ))}
       </motion.div>
 
-      {/* Stats */}
-      <div className="mt-6 pt-4 border-t border-slate-700">
-        <p className="text-sm text-gray-400">
-          Total processing time: <span className="text-blue-400 font-semibold">~1800ms</span>
-        </p>
+      {/* Stats Footnote */}
+      <div className="pt-4 flex items-center justify-between">
+         <div className="flex items-center gap-2">
+            <Activity className="w-3 h-3 text-blue-500" />
+            <p className="text-[10px] font-black uppercase tracking-widest text-slate-600">Trace Latency</p>
+         </div>
+         <p className="text-xs font-bold text-white tracking-tighter">~1800ms</p>
       </div>
-    </motion.div>
+    </div>
   );
 }

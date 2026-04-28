@@ -1,79 +1,93 @@
 'use client';
 
 import { motion } from 'framer-motion';
-import { Code, Globe, Share2, Mail } from 'lucide-react';
+import { Code, Globe, Share2, Mail, ArrowRight, Github, Twitter, Linkedin, ExternalLink } from 'lucide-react';
 
 export default function Footer() {
   const currentYear = new Date().getFullYear();
 
   return (
-    <footer className="bg-slate-950 border-t border-slate-800">
-      <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8 py-16">
-        {/* CTA Section */}
+    <footer className="bg-[#02040a] border-t border-white/5 relative overflow-hidden">
+      {/* Background Glow */}
+      <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[100%] h-[300px] bg-blue-600/5 blur-[120px] pointer-events-none"></div>
+
+      <div className="max-w-7xl mx-auto px-6 lg:px-8 py-24 relative z-10">
+        {/* Main CTA Section */}
         <motion.div
           initial={{ opacity: 0, y: 20 }}
           whileInView={{ opacity: 1, y: 0 }}
           viewport={{ once: true }}
-          className="grid grid-cols-1 md:grid-cols-2 gap-8 mb-12 pb-12 border-b border-slate-800"
+          className="grid grid-cols-1 lg:grid-cols-2 gap-16 mb-24 pb-24 border-b border-white/5"
         >
           <div>
-            <h3 className="text-2xl font-bold mb-4">Ready to prevent disruptions?</h3>
-            <p className="text-gray-400 mb-6">
-              Join enterprises using CascadeIQ to optimize their supply chains with AI-powered insights.
+            <motion.span className="text-blue-500 font-mono text-xs tracking-[0.3em] uppercase mb-4 block font-bold">Get Started</motion.span>
+            <h3 className="text-4xl md:text-5xl font-bold mb-8 tracking-tight text-white leading-tight">
+               Ready to <span className="text-gradient italic font-light">Secure</span> your chain?
+            </h3>
+            <p className="text-slate-400 text-lg mb-10 max-w-lg leading-relaxed">
+              Join the elite logistics teams using CascadeIQ to transform systemic risks into operational advantages.
             </p>
-            <a
-              href="#"
-              className="inline-block px-6 py-3 bg-gradient-to-r from-blue-600 to-blue-500 rounded-lg font-semibold hover:shadow-lg hover:shadow-blue-500/50 transition-all"
-            >
-              Get Started
-            </a>
+            <div className="flex flex-wrap gap-4">
+               <motion.button 
+                 whileHover={{ scale: 1.02 }}
+                 whileTap={{ scale: 0.98 }}
+                 className="px-8 py-4 rounded-full bg-blue-600 text-white font-bold flex items-center gap-2 shadow-lg shadow-blue-900/20"
+               >
+                  Enterprise Demo <ArrowRight className="w-4 h-4" />
+               </motion.button>
+               <motion.button 
+                 whileHover={{ scale: 1.02 }}
+                 whileTap={{ scale: 0.98 }}
+                 className="px-8 py-4 rounded-full glass-card text-white font-bold border border-white/10"
+               >
+                  Contact Sales
+               </motion.button>
+            </div>
           </div>
 
-          <div>
-            <h3 className="text-2xl font-bold mb-4">For Google Solution Challenge</h3>
-            <p className="text-gray-400 mb-6">
-              This platform demonstrates an end-to-end AI solution for supply chain optimization, built with enterprise-grade GCP services.
-            </p>
-            <a
-              href="#"
-              className="inline-block px-6 py-3 bg-slate-700/50 border border-slate-600 rounded-lg font-semibold hover:bg-slate-700/70 transition-all"
-            >
-              View Submission
-            </a>
+          <div className="glass-panel p-10 rounded-[3rem] border-white/10 bg-white/5 flex flex-col justify-between">
+             <div>
+                <h4 className="text-xl font-bold text-white mb-4">Google Solution Challenge</h4>
+                <p className="text-slate-400 text-sm leading-relaxed mb-8">
+                   This platform is a definitive proof-of-concept for the 2026 Solution Challenge, showcasing the power of Vertex AI and BigQuery.
+                </p>
+             </div>
+             <motion.a 
+               href="#" 
+               whileHover={{ x: 10 }}
+               className="flex items-center gap-2 text-blue-400 font-bold group"
+             >
+                View Project Submission <ExternalLink className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+             </motion.a>
           </div>
         </motion.div>
 
-        {/* Links Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="grid grid-cols-2 md:grid-cols-4 gap-8 mb-12 pb-12 border-b border-slate-800"
-        >
+        {/* Navigation Grid */}
+        <div className="grid grid-cols-2 md:grid-cols-4 gap-12 mb-24">
           {[
             {
-              title: 'Product',
-              links: ['Features', 'Security', 'Pricing', 'Documentation'],
+              title: 'Platform',
+              links: ['Architecture', 'Vertex AI Engine', 'Real-time Pipeline', 'BigQuery Hub'],
             },
             {
-              title: 'Company',
-              links: ['About', 'Blog', 'Careers', 'Contact'],
+              title: 'Solutions',
+              links: ['Maritime Logistics', 'Last-mile Delivery', 'Warehouse Triage', 'Crisis Management'],
             },
             {
               title: 'Resources',
-              links: ['API Docs', 'Community', 'Status', 'Support'],
+              links: ['Technical Documentation', 'API Reference', 'Case Studies', 'Network Status'],
             },
             {
-              title: 'Legal',
-              links: ['Privacy', 'Terms', 'Compliance', 'Cookies'],
+              title: 'Company',
+              links: ['About Us', 'Contact Support', 'Privacy Policy', 'Terms of Service'],
             },
           ].map((section, idx) => (
             <div key={idx}>
-              <h4 className="font-semibold mb-4">{section.title}</h4>
-              <ul className="space-y-2">
+              <h4 className="text-sm font-black uppercase tracking-[0.2em] text-slate-500 mb-8">{section.title}</h4>
+              <ul className="space-y-4">
                 {section.links.map((link) => (
                   <li key={link}>
-                    <a href="#" className="text-gray-400 hover:text-gray-300 transition-colors text-sm">
+                    <a href="#" className="text-slate-400 hover:text-white transition-colors text-sm font-medium">
                       {link}
                     </a>
                   </li>
@@ -81,53 +95,41 @@ export default function Footer() {
               </ul>
             </div>
           ))}
-        </motion.div>
+        </div>
 
-        {/* Bottom Section */}
-        <motion.div
-          initial={{ opacity: 0 }}
-          whileInView={{ opacity: 1 }}
-          viewport={{ once: true }}
-          className="flex flex-col md:flex-row items-center justify-between gap-8"
-        >
-          {/* Logo/Brand */}
+        {/* Bottom Branding & Socials */}
+        <div className="pt-12 border-t border-white/5 flex flex-col md:flex-row items-center justify-between gap-12">
           <div>
-            <h2 className="text-2xl font-bold bg-gradient-to-r from-blue-400 to-purple-400 bg-clip-text text-transparent">
-              CascadeIQ
+            <h2 className="text-3xl font-bold text-white tracking-tighter mb-2">
+               Cascade<span className="text-blue-500 italic font-light">IQ</span>
             </h2>
-            <p className="text-sm text-gray-500 mt-2">AI-powered supply chain intelligence</p>
+            <p className="text-xs text-slate-500 font-bold uppercase tracking-[0.3em]">Systemic Intelligence</p>
           </div>
 
-          {/* Social Links */}
-          <div className="flex items-center gap-6">
-            {[
-              { icon: Code, label: 'GitHub' },
-              { icon: Globe, label: 'Website' },
-              { icon: Share2, label: 'Twitter' },
-              { icon: Mail, label: 'Email' },
-            ].map((social, idx) => {
-              const Icon = social.icon;
-              return (
-                <motion.a
-                  key={idx}
-                  href="#"
-                  whileHover={{ scale: 1.2 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="w-10 h-10 rounded-lg bg-slate-800/50 border border-slate-700 flex items-center justify-center hover:bg-slate-700 transition-colors"
-                  title={social.label}
-                >
-                  <Icon className="w-5 h-5 text-gray-400" />
-                </motion.a>
-              );
-            })}
+          <div className="flex items-center gap-4">
+            <SocialIcon icon={<Github />} />
+            <SocialIcon icon={<Twitter />} />
+            <SocialIcon icon={<Linkedin />} />
+            <SocialIcon icon={<Mail />} />
           </div>
-        </motion.div>
 
-        {/* Copyright */}
-        <div className="mt-12 pt-8 border-t border-slate-800 text-center text-sm text-gray-500">
-          <p>© {currentYear} CascadeIQ. All rights reserved. Built for Google Solution Challenge.</p>
+          <p className="text-slate-600 text-xs font-medium">
+             © {currentYear} CascadeIQ Platform. All Rights Reserved.
+          </p>
         </div>
       </div>
     </footer>
+  );
+}
+
+function SocialIcon({ icon }: { icon: any }) {
+  return (
+    <motion.a
+      href="#"
+      whileHover={{ y: -4, scale: 1.1 }}
+      className="w-12 h-12 rounded-2xl glass-card border-white/10 flex items-center justify-center text-slate-400 hover:text-white hover:border-blue-500/50 transition-all"
+    >
+      <div className="w-5 h-5">{icon}</div>
+    </motion.a>
   );
 }
